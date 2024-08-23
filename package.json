@@ -1,0 +1,47 @@
+{
+  "name": "rentry-co",
+  "version": "1.0.0",
+  "description": "A javascript library for creating and managing entries in rentry.co",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "./dist/**"
+  ],
+  "scripts": {
+    "dev:lib": "bun --watch ./src/lib/test.ts",
+    "dev:server": "bun --watch ./src/server/server.ts",
+    "build": "bun run build:lib && bun run build:server",
+    "build:lib": "tsup ./src/lib/index.ts --outDir ./dist/lib --minify --format esm,cjs --dts --external express",
+    "build:server": "tsup ./src/server/index.ts --outDir ./dist/server --minify --format esm,cjs --dts --external express",
+    "type-check": "tsc"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/lib/index.d.ts",
+      "require": "./dist/lib/index.cjs",
+      "import": "./dist/lib/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "require": "./dist/server/index.cjs",
+      "import": "./dist/server/index.js"
+    }
+  },
+  "keywords": [
+    "api",
+    "express",
+    "library",
+    "markdown",
+    "rentry"
+  ],
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}
