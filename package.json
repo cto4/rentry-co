@@ -4,7 +4,7 @@
   "description": "A Full CRUD super-lite rentry.co wrapper with typescript support and no-dependencies library.",
   "homepage": "https://cto4.github.io/rentry-co",
   "repository": {
-    "url": "https://github.com/cto4/rentry-co"
+    "url": "git+https://github.com/cto4/rentry-co.git"
   },
   "license": "MIT",
   "author": "cto4",

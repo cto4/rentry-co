@@ -52,7 +52,7 @@ async function test() {
 
 Output :
 
-> save token & id for fature uses !
+> save token & id for feature use !
 
 ```json
 { "status": "200", "token": "abxx12xx", "id": "abc123" }
