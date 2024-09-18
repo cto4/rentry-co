@@ -1,15 +1,20 @@
 {
   "name": "rentry-co",
-  "version": "1.0.0",
-  "description": "A javascript library for creating and managing entries in rentry.co",
+  "version": "1.2.0",
+  "description": "A Full CRUD super-lite rentry.co wrapper with typescript support and no-dependencies library.",
+  "homepage": "https://cto4.github.io/rentry-co",
+  "repository": {
+    "url": "https://github.com/cto4/rentry-co"
+  },
   "license": "MIT",
+  "author": "cto4",
   "type": "module",
   "files": [
     "./dist/**"
   ],
   "scripts": {
-    "dev:lib": "bun --watch ./src/lib/test.ts",
-    "dev:server": "bun --watch ./src/server/server.ts",
+    "dev:lib": "bun --watch test lib",
+    "dev:server": "bun --watch ./src/server/example.ts",
     "build": "bun run build:lib && bun run build:server",
     "build:lib": "tsup ./src/lib/index.ts --outDir ./dist/lib --minify --format esm,cjs --dts --external express",
     "build:server": "tsup ./src/server/index.ts --outDir ./dist/server --minify --format esm,cjs --dts --external express",
@@ -36,6 +41,7 @@
   ],
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
+    "@types/bun": "^1.1.9",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "body-parser": "^1.20.2",

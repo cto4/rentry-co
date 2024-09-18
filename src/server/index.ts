@@ -4,23 +4,28 @@ import RentryCo from "@lib/index";
 const RentryCoExpress = Router();
 export const rentry = new RentryCo();
 
-RentryCoExpress.post("/new", async function (req, res) {
-  const request = await rentry.new({ content: req.body });
+RentryCoExpress.post("/create", async function (req, res) {
+  const request = await rentry.create({ content: req.body });
   res.json(request);
 });
 
-RentryCoExpress.post("/new/:id", async function (req, res) {
-  const request = await rentry.new({ id: req.params.id, content: req.body });
+RentryCoExpress.post("/create/:id", async function (req, res) {
+  const request = await rentry.create({ id: req.params.id, content: req.body });
   res.json(request);
 });
 
-RentryCoExpress.post("/edit/:id/:token", async function (req, res) {
-  const request = await rentry.edit({ id: req.params.id, token: req.params.token, content: req.body });
+RentryCoExpress.post("/update/:id/:token", async function (req, res) {
+  const request = await rentry.update({ id: req.params.id, token: req.params.token, content: req.body });
   res.json(request);
 });
 
-RentryCoExpress.get("/get/:id", async function (req, res) {
-  const request = await rentry.get({ id: req.params.id });
+RentryCoExpress.post("/delete/:id/:token", async function (req, res) {
+  const request = await rentry.delete({ id: req.params.id, token: req.params.token });
+  res.json(request);
+});
+
+RentryCoExpress.get("/read/:id", async function (req, res) {
+  const request = await rentry.read({ id: req.params.id });
   res.json(request);
 });
 

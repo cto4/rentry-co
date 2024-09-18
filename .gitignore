@@ -6,6 +6,7 @@ node_modules*
 .next
 .turbo
 .env*.local
+*.test.json
 
 # local builds
 dist

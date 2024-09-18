@@ -8,41 +8,42 @@ interface RentryResult {
 export interface Result {
   status?: string;
   content?: string;
+  errors?: string;
   token?: string;
   id?: string;
 }
 
-interface GetProps {
+export interface ReadProps {
   id: string;
 }
 
-interface NewProps {
+export interface CreateProps {
   id?: string;
   content: string;
 }
 
-interface EditProps {
+export interface UpdateProps {
   id: string;
   content: string;
   token: string;
 }
 
-export class RentryCo {
-  async get({ id }: GetProps) {
-    return new Promise<Result>((resolve, reject) => {
-      fetch(`https://rentry.co/api/raw/${id}`)
-        .then((res) => res.json())
-        .then((res: RentryResult) =>
-          resolve({
-            status: res.status,
-            content: res.content,
-          })
-        )
-        .catch(reject);
-    });
-  }
+export interface DeleteProps {
+  id: string;
+  token: string;
+}
 
-  async new({ id, content }: NewProps) {
+/**
+ * [RentryCo](https://github.com/cto4/rentry-co) -- By [cto4](https://github.com/cto4)
+ *
+ * A Full CRUD super-lite rentry.co wrapper with typescript support and no-dependencies library.
+ */
+export class RentryCo {
+  /**
+   * Create a new rentry.co entry
+   * @returns
+   */
+  create({ id, content }: CreateProps) {
     return new Promise<Result>(async (resolve, reject) => {
       const csrf = await this.csrf();
 
@@ -54,20 +55,44 @@ export class RentryCo {
       body.append("text", content);
       body.append("url", id ?? "");
 
-      fetch(api, { method: "POST", headers, body })
-        .then((res) => res.json())
-        .then((res: RentryResult) =>
+      try {
+        const req = await fetch(api, { method: "POST", headers, body });
+        const res: RentryResult = await req.json();
+        if (req.ok && res.status == "200") {
           resolve({
             status: res.status,
             token: res.edit_code,
             id: res.url.split("/")[3],
-          })
-        )
-        .catch(reject);
+          });
+        } else reject(res);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
-  async edit({ id, content, token }: EditProps) {
+  /**
+   * Read rentry.co entry
+   * @returns
+   */
+  read({ id }: ReadProps) {
+    return new Promise<Result>(async (resolve, reject) => {
+      try {
+        const req = await fetch(`https://rentry.co/api/raw/${id}`);
+        const res: RentryResult = await req.json();
+        if (req.ok && res.status == "200") resolve(res);
+        else reject(res);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Update rentry.co entry
+   * @returns
+   */
+  update({ id, content, token }: UpdateProps) {
     return new Promise<Result>(async (resolve, reject) => {
       const csrf = await this.csrf();
 
@@ -79,10 +104,41 @@ export class RentryCo {
       body.append("edit_code", token);
       body.append("text", content);
 
-      fetch(api, { method: "POST", headers, body })
-        .then((res) => res.json())
-        .then(({ status }: RentryResult) => resolve({ status, token, id }))
-        .catch(reject);
+      try {
+        const req = await fetch(api, { method: "POST", headers, body });
+        const res: RentryResult = await req.json();
+        if (req.ok && res.status == "200") resolve(res);
+        else reject(res);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Delete rentry.co entry
+   * @returns
+   */
+  delete({ id, token }: DeleteProps) {
+    return new Promise<Result>(async (resolve, reject) => {
+      const csrf = await this.csrf();
+
+      const api = "https://rentry.co/api/edit/" + id;
+      const headers = { ...csrf.headers } as HeadersInit;
+
+      const body = new FormData();
+      body.append("csrfmiddlewaretoken", csrf.token);
+      body.append("edit_code", token);
+      body.append("delete", "true");
+
+      try {
+        const req = await fetch(api, { method: "POST", headers, body });
+        const res: RentryResult = await req.json();
+        if (req.ok && res.status == "200") resolve(res);
+        else reject(res);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 

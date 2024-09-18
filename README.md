@@ -1,21 +1,20 @@
 # Rentry-Co
 
-A javascript library for creating and managing entries in rentry.co
-
-> a super lightweight no-dependencies 14KB unpacked library !
+A Full CRUD super-lite rentry.co wrapper with typescript support and no-dependencies library.
 
 ## Features
 
-- read pastes
-- edit pastes
-- create pastes
+- create entries
+- read entries
+- update entries
+- delete entries
 - typescript support
 - built-in express routes
 - no-dependencies
 
 ## Installation
 
-```
+```sh
 npm i rentry-co
 ```
 
@@ -24,25 +23,27 @@ npm i rentry-co
 Import the library
 
 ```ts
-// ComonJS
+// src/lib/rentry.js
+
+// CommonJS
 const RentryCo = require("rentry-co");
 // ESM
 import RentryCo from "rentry-co";
 
-/*============================*/
+/*=============================*/
 
 // Use It
 const rentry = new RentryCo();
+export default rentry;
 ```
 
-### Create a new paste
-
-Return the response as an object :
+### Create a new entry
 
 ```ts
 async function test() {
-  var res = await rentry.new({
-    id: "<ID>", // optional, skip for random id
+  // id is optional, skip for random id
+  var res = await rentry.create({
+    id: "<ID>",
     content: "Hello World",
   });
   console.log(res);
@@ -51,21 +52,32 @@ async function test() {
 
 Output :
 
+> save token & id for fature uses !
+
 ```json
-{
-  "status": "200",
-  "token": "abxx12xx", // <TOKEN> for editing the paste
-  "id": "abc123" // <ID>
-}
+{ "status": "200", "token": "abxx12xx", "id": "abc123" }
 ```
 
-### Edit an exist paste
-
-Return the response as an object :
+### Read entry
 
 ```ts
 async function test() {
-  var res = await rentry.edit({
+  var res = await rentry.read({ id: "<ID>" });
+  console.log(res);
+}
+```
+
+Output :
+
+```json
+{ "status": "200", "content": "## Hi\nHello World" }
+```
+
+### Update an existing entry
+
+```ts
+async function test() {
+  var res = await rentry.update({
     id: "<ID>",
     token: "<TOKEN>",
     content: "## Hi\nHello World",
@@ -77,20 +89,17 @@ async function test() {
 Output :
 
 ```json
-{
-  "status": "200",
-  "token": "abxx12xx", // <TOKEN> for editing the paste
-  "id": "abc123" // <ID>
-}
+{ "status": "200", "content": "OK" }
 ```
 
-### Read a paste
-
-Return the response as an object :
+### Delete entry
 
 ```ts
 async function test() {
-  var res = await rentry.get({ id: "<ID>" });
+  var res = await rentry.delete({
+    id: "<ID>",
+    token: "<TOKEN>",
+  });
   console.log(res);
 }
 ```
@@ -98,25 +107,26 @@ async function test() {
 Output :
 
 ```json
-{
-  "status": "200",
-  "content": "## Hi\nHello World"
-}
+{ "status": "200", "content": "OK" }
 ```
 
 ### Express routes
 
 Use built-in expres routes from `RentryCoExpress` to create api.
 
-> note: `body-parser` is required, install with `npm i body-parser`
+> note: `body-parser`, `cors` are required, install with `npm i body-parser cors`
 
 ```ts
 import express from "express";
 import bodyParser from "body-parser";
-import RentryCoExpress from "rentry-co/server";
+import cors from "cors";
+
+import RentryCoExpress from "./index";
 
 const app = express();
 app.use(bodyParser.text());
+app.use(cors());
+
 app.use("/api/rentry", RentryCoExpress);
 
 app.listen(3000, () => {
